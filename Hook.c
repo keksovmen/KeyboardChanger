@@ -31,7 +31,7 @@ LRESULT CALLBACK KeybordHook(
 	if(pMsg->message == WM_KEYDOWN && parseScanCode(pMsg->lParam) != 0){
 		
 		//Must be first 'couse there is some return erly statements
-		//Will write inly if file is openned
+		//Will write only if file is openned
 		writeKey(pMsg->wParam, pMsg->lParam);
 		
 		//F6 turns keybord mode on or off
@@ -39,6 +39,7 @@ LRESULT CALLBACK KeybordHook(
 			swapOn();
 			return CallNextHookEx(0, nCode, wParam, lParam);
 		}
+		
 		/*
 		F7 tries to open file where 
 		will be placed actual key 
@@ -46,18 +47,16 @@ LRESULT CALLBACK KeybordHook(
 		see Output.txt
 		*/
 		if(pMsg->wParam == VK_F7){
-			if(isDebugFileOpened() == 0){
+			const int isFileOpened = isDebugFileOpened();
+			if(isFileOpened == 0){
 				prepareFile();
-			}else if (isDebugFileOpened() == 1){
+			}else if (isFileOpened == 1){
 				closeFile();
 			}else{
 				//error case
+				//when you tried to open but some Windows error was dropped
 			}
 			return CallNextHookEx(0, nCode, wParam, lParam);
-		}
-		
-		if(isDebugFileOpened() == 1){
-			
 		}
 		
 		//button clicks go here

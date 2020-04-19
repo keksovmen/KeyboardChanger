@@ -1,38 +1,38 @@
 #include <Windows.h>
 #include <strsafe.h>
 #include <iostream>
+#include <stdlib>
 
-// HHOOK hHook;
 HOOKPROC hkprcKeybord;
-static HINSTANCE hinstDLL; 
-static HHOOK hHook; 
+static HINSTANCE hinstDLL;
+static HHOOK hHook;
 
+//Test version of what hook is
 LRESULT CALLBACK KeybordHook(
 		int code, WPARAM wParam, LPARAM lParam
 	)
 {
-	// std::cout << "Works" << std::endl;
 	MessageBox(NULL, "Entered", "key pressed", MB_ICONINFORMATION);
 	return CallNextHookEx(hHook, code, wParam, lParam);
 }
 
 void SetHook()
 {
-	// DWORD dThreadId = GetCurrentThreadId();
-	// std::cout << dThreadId << std::endl;
 	hinstDLL = LoadLibrary(TEXT("Hook.dll")); 
 	if(hinstDLL == NULL){
-		std::cout << "ERROR WITH DLL" << std::endl;
+		std::cout << "There is no such DLL" << std::endl;
+		std::exit(1);
 	}
 	
 	hkprcKeybord = (HOOKPROC)GetProcAddress(hinstDLL, "KeybordHook"); 
 	if(hkprcKeybord == NULL){
-		std::cout << "ERROR WITH FUNCTION" << std::endl;
+		std::cout << "There is no such FUNCTION" << std::endl;
+		std::exit(2);
 	}
 
 	hHook = SetWindowsHookEx(WH_GETMESSAGE, hkprcKeybord, hinstDLL, 0);
 	if(hHook == NULL){
-		std::cout<< "Error!" << std::endl;
+		std::cout<< "Error with hook binding!" << std::endl;
 		DWORD dError = GetLastError();
 		if(dError == ERROR_INVALID_HOOK_FILTER){
 			std::cout << 1;
@@ -67,11 +67,7 @@ int main()
 {
 	SetHook();
 	int id = 0;
+	//wait for your input to termenate program
 	std::cin >> id;
 	Unhook();
-	// MSG msg;
-	// while(GetMessage(&msg, NULL, 0, 0))
-	// {
-		
-	// }
 }

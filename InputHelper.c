@@ -7,7 +7,7 @@
 static int inputLength = 0;
 
 //total (MAX_INPUT_LENGTH / 2) button click, be aware to increase if needed
-INPUT inputs[MAX_INPUT_LENGTH];
+static INPUT inputs[MAX_INPUT_LENGTH];
 
 //wParam is virtual code
 //return 0 if can't handle, means there is no such letter, 1 if handled
@@ -425,20 +425,6 @@ char translateToChar(WPARAM wParam){
 	return '\0';
 }
 
-//will show error box if length is too big
-static void incrementCounter(){
-	inputLength++;
-	if(inputLength >= MAX_INPUT_LENGTH){
-		inputLength = 0;
-		ShowMyError(INPUT_LENGTH);
-	}
-		
-}
-
-static void resetCounter(){
-	inputLength = 0;
-}
-
 
 void presShift(){
 	inputs[inputLength].type = INPUT_KEYBOARD;
@@ -495,4 +481,18 @@ void sendInput(){
 	if(realAmount == 0)
 		ShowWindowsError(GetLastError());
 	resetCounter();
+}
+
+//will show error box if length is too big
+static void incrementCounter(){
+	inputLength++;
+	if(inputLength >= MAX_INPUT_LENGTH){
+		inputLength = 0;
+		ShowMyError(INPUT_LENGTH);
+	}
+		
+}
+
+static void resetCounter(){
+	inputLength = 0;
 }
